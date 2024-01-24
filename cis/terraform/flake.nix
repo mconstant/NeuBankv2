@@ -9,11 +9,8 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        # TODO remove unfree after removing Terraform
-        # (Source: https://xeiaso.net/blog/notes/nix-flakes-terraform-unfree-fix)
         pkgs = import nixpkgs {
           inherit system;
-          config.allowUnfree = true;
         };
       in
       with pkgs;
@@ -22,7 +19,6 @@
           packages = [
             bash
             azure-cli
-            terraform
             direnv
           ];
         };

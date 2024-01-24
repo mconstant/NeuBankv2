@@ -14,8 +14,8 @@ BACKEND_CONFIG := -backend-config="storage_account_name=$(STORAGE_ACCOUNT)" -bac
 TERRAFORM_CMD := $(call terraform_cmd,$(TERRAFORM_ROOT_DIR))
 
 bootstrap:
+	touch .envrc
 	az login
-	SUBSCRIPTION_NAME="$(SUBSCRIPTION_NAME)" az account set -s "$(SUBSCRIPTION_NAME)"
 	$(call terraform_cmd,$(CI_BOOTSTRAP_ROOT_DIR),init $(BACKEND_CONFIG))
 
 bootstrap_backout:

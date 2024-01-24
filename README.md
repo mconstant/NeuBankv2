@@ -1,10 +1,11 @@
 # Instructions
 1. Fork this repo
-2. `cd cis/terraform`
+2. Install `terraform` if you haven't
+3. `cd cis/terraform`
     1. If you have nix installed
-        1. `make tools`
+        1. `make tools` and grab tea
     2. If you don't want to install nix
-        1. Install `make`, `terraform`, `direnv`, `azure-cli` and make sure you have `bash` shell
+        1. Install `make`, `direnv`, `azure-cli` and make sure you have `bash` shell
     3. `make bootstrap`
     
 
