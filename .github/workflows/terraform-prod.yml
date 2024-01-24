@@ -58,27 +58,27 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform First Init
       id: init
-      run: terraform -chdir=cis/terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ env.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ env.RESOURCE_GROUP }}" 
+      run: terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ env.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ env.RESOURCE_GROUP }}" 
 
     - name: Switch Workspace
       id: workspace
-      run: terraform -chdir=cis/terraform workspace select ${{ env.WORKSPACE }}
+      run: terraform workspace select ${{ env.WORKSPACE }}
 
     - name: Terraform ReInit
       id: reinit
-      run: terraform -chdir=cis/terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ env.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ env.RESOURCE_GROUP }}" 
+      run: terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ env.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ env.RESOURCE_GROUP }}" 
 
     - name: Terraform Format
       id: fmt
       if: github.ref != 'refs/heads/main'
-      run: terraform -chdir=cis/terraform fmt -check
+      run: terraform fmt -check
       
     # Run a terraform validate for push and PR on non-main branch
     # Run even if formatting fails
     - name: Terraform Validate
       id: validate
       if: github.ref != 'refs/heads/main' && (success() || failure())
-      run: terraform -chdir=cis/terraform validate
+      run: terraform validate
 
     # Run a terraform plan for pull requests only
     - name: Terraform Plan
@@ -87,7 +87,7 @@ jobs:
       shell: bash
       run: |
         echo 'plan<<EOF' >> $GITHUB_OUTPUT
-        terraform -chdir=cis/terraform plan -no-color -out=tfplan >> $GITHUB_OUTPUT
+        terraform plan -no-color -out=tfplan >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
 
     # Run Checkov against configuration
@@ -141,15 +141,15 @@ jobs:
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform -chdir=cis/terraform apply -auto-approve
+      run: terraform apply -auto-approve
 
     - name: Generate Arch Diagram .dot
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform -chdir=cis/terraform graph > prod_infrastructure.dot
+      run: terraform graph > prod_infrastructure.dot
 
     - name: Generate Arch Diagram .png
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform -chdir=cis/terraform graph | dot -Tpng > prod_infrastructure.png
+      run: terraform graph | dot -Tpng > prod_infrastructure.png
 
     - name: Upload Artifact
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
