@@ -3,6 +3,7 @@
 #############################################################################
 
 variable "azure_location" {
+  default = "eastus"
   type    = string
 }
 
@@ -11,9 +12,11 @@ variable "github_user_name" {
 }
 
 variable "github_repository" {
+  default = "NeuBankv2"
   type    = string
 }
 
 variable "token" {
   type    = string
+  sensitive = true
 }

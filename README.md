@@ -1,12 +1,24 @@
 # Instructions
 1. Fork this repo
+2. In Github get a Personal Account Token for the forked repo that allows changing secrets for it.
+    1. Github Account Settings > Developer Settings > Personal Access Tokens > Fine-grained Tokens > Generate New Token
+        1. Only select the repo you want actions set up in.
+        2. Token name can be `neubank-example-terraform-actions`
+        3. In `Repo Permissions` choose `Secrets` `Read and Write`
 2. Install `terraform` if you haven't
-3. `cd cis/terraform`
-    1. If you have nix installed
-        1. `make tools` and grab tea
-    2. If you don't want to install nix
-        1. Install `make`, `direnv`, `azure-cli` and make sure you have `bash` shell
-    3. `make bootstrap`
+4. Do the following to bootstrap actions and storing Terraform State in Azure
+    ```shell
+    $ echo 'export PAT_TOKEN_VALUE=<your_pat_token>' >> .env
+    $ source .env 
+    $ make bootstrap
+    ```
+    3. Enter `your_github_username` when prompted for `var.github_user_name`
+    4. Grab more tea while it makes a container for remote tfstate in Azure and sets the secrets in your Github repo so the actions in this repo can `terraform plan` etc. You will still need to do the next step to initalize workspaces before this works.
+    5. When done initialize all the workspaces for our environments
+    ```shell
+    $ source .env 
+    $ make create_workspaces
+    ```
     
 
 -----

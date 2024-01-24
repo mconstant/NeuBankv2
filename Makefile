@@ -11,15 +11,25 @@ TERRAFORM_ROOT_DIR := ./
 CI_BOOTSTRAP_ROOT_DIR := ./bootstrap
 
 BACKEND_CONFIG := -backend-config="storage_account_name=$(STORAGE_ACCOUNT)" -backend-config="container_name=$(CONTAINER_NAME)" -backend-config="resource_group_name=$(RESOURCE_GROUP)"
+BOOTSTRAP_CONFIG := -var token=$(PAT_TOKEN_VALUE)
 TERRAFORM_CMD := $(call terraform_cmd,$(TERRAFORM_ROOT_DIR))
 
 bootstrap:
-	touch .envrc
-	az login
-	$(call terraform_cmd,$(CI_BOOTSTRAP_ROOT_DIR),init $(BACKEND_CONFIG))
+	az account set -s $(SUBSCRIPTION_NAME)
+	$(call terraform_cmd,$(CI_BOOTSTRAP_ROOT_DIR),init)
+	$(call terraform_cmd,$(CI_BOOTSTRAP_ROOT_DIR),apply -auto-approve $(BOOTSTRAP_CONFIG))
 
-bootstrap_backout:
-	$(call terraform_cmd,$(CI_BOOTSTRAP_ROOT_DIR),destroy -auto-approve) 
+create_workspaces:
+	$(TERRAFORM_CMD) init -reconfigure $(BACKEND_CONFIG)
+	$(TERRAFORM_CMD) init -upgrade $(BACKEND_CONFIG)
+	$(TERRAFORM_CMD) workspace new prod
+	$(TERRAFORM_CMD) workspace new test
+	$(TERRAFORM_CMD) workspace new dev
+	$(TERRAFORM_CMD) workspace select default
+
+
+bootstrap_destroy:
+	$(call terraform_cmd,$(CI_BOOTSTRAP_ROOT_DIR),destroy -auto-approve $(BOOTSTRAP_CONFIG)) 
 
 terraform:
 	$(TERRAFORM_CMD) $(filter-out $@,$(MAKECMDGOALS))

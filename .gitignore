@@ -26,6 +26,5 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# future updates from init commit to .envrc should be private for users
 .envrc
 .env
