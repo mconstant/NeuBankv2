@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "this" {
-  name     = local.resource_group_name
-  location = local.location
+  name     = "${var.company}-${terraform.workspace}-rg-${var.region}"
+  location = var.region
 
   tags = lookup(module.common.tags, terraform.workspace, null)
 }
