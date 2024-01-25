@@ -41,5 +41,13 @@ jobs:
       run: terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ env.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ env.RESOURCE_GROUP }}" 
   
     - name: Add Dev Workspace
-      id: devworkspace
-      run: terraform workspace select ${{ env.WORKSPACE }}
+      id: dev
+      run: terraform workspace new dev
+
+    - name: Add Test Workspace
+      id: test
+      run: terraform workspace new test
+
+    - name: Add Prod Workspace
+      id: prod
+      run: terraform workspace new prod
