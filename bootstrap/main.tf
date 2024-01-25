@@ -108,15 +108,15 @@ resource "github_actions_secret" "actions_secret" {
   plaintext_value = each.value
 }
 
-# resource "null_resource" "local-provisioner" {
-#   provisioner "local-exec" {
-#     command = <<EOF
-#       ACCOUNT_KEY=$(az storage account keys list --resource-group ${azurerm_storage_account.sa.resource_group_name} --account-name ${azurerm_storage_account.sa.name} --query '[0].value' -o tsv)
-#       echo "export ARM_ACCESS_KEY=$ACCOUNT_KEY" >> ../.env
-#       echo 'export STORAGE_ACCOUNT=${azurerm_storage_account.sa.name}' >> ../.env
-#       echo 'export RESOURCE_GROUP=${azurerm_storage_account.sa.resource_group_name}' >> ../.env
-#       echo 'export CONTAINER_NAME=${azurerm_storage_container.ct.name}' >> ../.env
-#       echo 'export ARM_SAS_TOKEN="${data.azurerm_storage_account_sas.sas.sas}"' >> ../.env      
-#     EOF
-#   }
-# }
+resource "null_resource" "local-provisioner" {
+  provisioner "local-exec" {
+    command = <<EOF
+      ACCOUNT_KEY=$(az storage account keys list --resource-group ${azurerm_storage_account.sa.resource_group_name} --account-name ${azurerm_storage_account.sa.name} --query '[0].value' -o tsv)
+      echo "export ARM_ACCESS_KEY=$ACCOUNT_KEY" >> ../.env
+      echo 'export STORAGE_ACCOUNT=${azurerm_storage_account.sa.name}' >> ../.env
+      echo 'export RESOURCE_GROUP=${azurerm_storage_account.sa.resource_group_name}' >> ../.env
+      echo 'export CONTAINER_NAME=${azurerm_storage_container.ct.name}' >> ../.env
+      echo 'export ARM_SAS_TOKEN="${data.azurerm_storage_account_sas.sas.sas}"' >> ../.env      
+    EOF
+  }
+}
