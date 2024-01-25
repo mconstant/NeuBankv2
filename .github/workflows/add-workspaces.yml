@@ -1,15 +1,8 @@
-name: 'Terraform Destroy'
+name: 'Add Terraform Workspaces'
 
-on:
-  workflow_dispatch:
-     inputs:
-       workspace:
-         description: 'Enter the workspace'
-         required: true
-         default: 'dev'
+on: workflow_dispatch
 
 env:
-  WORKSPACE: ${{ github.event.inputs.workspace }}
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
@@ -21,7 +14,7 @@ env:
 
 jobs:
   terraform:
-    name: 'Terraform Destroy'
+    name: 'Add Terraform Workspaces'
     runs-on: ubuntu-latest
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -29,7 +22,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./
+        working-directory: ./bootstrap
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -47,9 +40,6 @@ jobs:
       id: init
       run: terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ env.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ env.RESOURCE_GROUP }}" 
   
-    - name: Switch Workspace
-      id: workspace
+    - name: Add Dev Workspace
+      id: devworkspace
       run: terraform workspace select ${{ env.WORKSPACE }}
-
-    - name: Terraform Destroy
-      run: terraform destroy -auto-approve

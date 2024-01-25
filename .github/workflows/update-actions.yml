@@ -1,15 +1,9 @@
-name: 'Terraform Destroy'
+name: 'Update Remote State and Actions Secrets with Terraform'
 
-on:
-  workflow_dispatch:
-     inputs:
-       workspace:
-         description: 'Enter the workspace'
-         required: true
-         default: 'dev'
+on: workflow_dispatch
 
 env:
-  WORKSPACE: ${{ github.event.inputs.workspace }}
+  WORKSPACE: actions
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
@@ -21,7 +15,7 @@ env:
 
 jobs:
   terraform:
-    name: 'Terraform Destroy'
+    name: 'Update Actions Secrets with Terraform'
     runs-on: ubuntu-latest
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -29,7 +23,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./
+        working-directory: ./bootstrap
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -51,5 +45,5 @@ jobs:
       id: workspace
       run: terraform workspace select ${{ env.WORKSPACE }}
 
-    - name: Terraform Destroy
-      run: terraform destroy -auto-approve
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -var token=${{ secrets.GITHUB_TOKEN }}
