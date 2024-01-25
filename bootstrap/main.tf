@@ -47,7 +47,10 @@ resource "azurerm_storage_account" "sa" {
   location                      = var.azure_location
   account_tier                  = "Standard"
   account_replication_type      = "LRS"
-  # public_network_access_enabled = false
+  # After bootstrapping and creating workspaces you can uncomment this and run the
+  # `Update Remote State and Actions Secrets with Terraform` Github Action
+
+  public_network_access_enabled = false
 }
 
 data "azurerm_storage_account_sas" "sas" {
