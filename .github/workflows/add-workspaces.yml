@@ -22,7 +22,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./bootstrap
+        working-directory: ./
 
     steps:
     # Checkout the repository to the GitHub Actions runner
