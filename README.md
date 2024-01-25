@@ -14,11 +14,7 @@
     ```
     3. Enter `your_github_username` when prompted for `var.github_user_name`
     4. Grab more tea while it makes a container for remote tfstate in Azure and sets the secrets in your Github repo so the actions in this repo can `terraform plan` etc. You will still need to do the next step to initalize workspaces before this works.
-    5. When done initialize all the workspaces for our environments
-    ```shell
-    $ source .env 
-    $ make create_workspaces
-    ```
+    5. When done initialize all the workspaces for our environments by running the `Add Terraform Workspaces` Github Action
     
 
 -----
