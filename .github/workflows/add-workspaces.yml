@@ -10,7 +10,7 @@ env:
   RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
   STORAGE_ACCOUNT: ${{ secrets.STORAGE_ACCOUNT }}
   CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
-  ARM_SAS_TOKEN: ${{ secrets.ARM_SAS_TOKEN }}
+#   ARM_SAS_TOKEN: ${{ secrets.ARM_SAS_TOKEN }}
 
 jobs:
   terraform:
