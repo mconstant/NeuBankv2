@@ -159,29 +159,22 @@ jobs:
         name: prod-infrastructure
         path: prod_infrastructure.png
 
-    - name: Generate Rover Diagram
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      uses: Official-James/rover-terraform-action@1.0.2
-    
-    - name: Upload Rover Image
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      uses: edunad/actions-image@v2.0.0
+    - uses: asannou/tfmermaid-action@v1
       with:
-        path: './rover.svg'
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        title: 'Rover Visualization Prod'
+        file: README.md
 
-    - name: Add Arch Diagrams to Branch
+    - name: Add Arch Diagrams to Branch and README.md
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        mv rover.svg rover_prod.svg
-        git add rover_prod.svg
+        git add README.md
         git add prod_infrastructure.png
         git add prod_infrastructure.dot
         git commit -m "Update prod_infrastructure.png and prod_infrastructure.dot and rover_prod.svg"
         git push
+
+
     
     - name: Generate Overview Diagram
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
