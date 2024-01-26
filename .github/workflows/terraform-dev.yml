@@ -1,18 +1,18 @@
-name: 'Terraform Prod'
+name: 'Terraform Dev'
 
 on:
   push:
      branches:
-       - main
+       - dev
   pull_request:
      branches:
-       - main
+       - dev
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 env:
- WORKSPACE: prod
+ WORKSPACE: dev
  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    # Set the working directory to main for the config files
+    # Set the working directory to dev for the config files
     defaults:
       run:
         shell: bash
@@ -71,20 +71,20 @@ jobs:
 
     - name: Terraform Format
       id: fmt
-      if: github.ref != 'refs/heads/main'
+      if: github.ref != 'refs/heads/dev'
       run: terraform fmt -check -recursive
       
-    # Run a terraform validate for push and PR on non-main branch
+    # Run a terraform validate for push and PR on non-dev branch
     # Run even if formatting fails
     - name: Terraform Validate
       id: validate
-      if: github.ref != 'refs/heads/main' && (success() || failure())
+      if: github.ref != 'refs/heads/dev' && (success() || failure())
       run: terraform validate
 
     # Run a terraform plan for pull requests only
     - name: Terraform Plan
       id: plan
-      if: github.event.pull_request.base.ref == 'main' && github.event_name == 'pull_request'
+      if: github.event.pull_request.base.ref == 'dev' && github.event_name == 'pull_request'
       shell: bash
       run: |
         echo 'plan<<EOF' >> $GITHUB_OUTPUT
@@ -143,43 +143,43 @@ jobs:
           })
 
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
       run: terraform apply -auto-approve
 
     - name: Generate Arch Diagram .dot
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform graph > prod_infrastructure.dot
+      if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+      run: terraform graph > dev_infrastructure.dot
 
     - name: Generate Arch Diagram .png
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform graph | dot -Tpng > prod_infrastructure.png
+      if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+      run: terraform graph | dot -Tpng > dev_infrastructure.png
 
     - name: Upload Artifact
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
       uses: actions/upload-artifact@v4.2.0
       with:
-        name: prod-infrastructure
-        path: prod_infrastructure.png
+        name: dev-infrastructure
+        path: dev_infrastructure.png
 
     # - name: gen diagram in readme
     #   uses: asannou/tfmermaid-action@v1.1.0
-    #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    #   if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
     #   with:
     #     file: ${{ github.workspace }}/README.md
     #     working-directory: .
-    #     label: prod
+    #     label: dev
     #     exclude: var,output
 
     - name: Add Arch Diagrams to Branch and README.md
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
       run: |
         git add README.md
-        git add prod_infrastructure.png
-        git add prod_infrastructure.dot
+        git add dev_infrastructure.png
+        git add dev_infrastructure.dot
         if ! git diff --cached --quiet --exit-code
         then
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -m "Update prod_infrastructure.png and prod_infrastructure.dot"
+          git commit -m "Update dev_infrastructure.png and dev_infrastructure.dot"
           git push
         fi  
