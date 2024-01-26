@@ -47,49 +47,48 @@ resource "azurerm_storage_account" "sa" {
   location                      = var.azure_location
   account_tier                  = "Standard"
   account_replication_type      = "LRS"
-  # After bootstrapping and creating workspaces you can uncomment this and run the
-  # `Update Remote State and Actions Secrets with Terraform` Github Action
+  allow_nested_items_to_be_public = false
 
-  public_network_access_enabled = false
 }
 
-data "azurerm_storage_account_sas" "sas" {
-  connection_string = azurerm_storage_account.sa.primary_connection_string
-  https_only        = true
+# data "azurerm_storage_account_sas" "sas" {
+#   connection_string = azurerm_storage_account.sa.primary_connection_string
+#   https_only        = true
 
-  resource_types {
-    service   = true
-    container = false
-    object    = false
-  }
+#   resource_types {
+#     service   = true
+#     container = false
+#     object    = false
+#   }
 
-  services {
-    blob  = true
-    queue = false
-    table = false
-    file  = false
-  }
+#   services {
+#     blob  = true
+#     queue = false
+#     table = false
+#     file  = false
+#   }
 
-  start  = "2018-03-21T00:00:00Z"
-  expiry = "2025-03-21T00:00:00Z"
+#   start  = "2018-03-21T00:00:00Z"
+#   expiry = "2025-03-21T00:00:00Z"
 
-  permissions {
-    read    = true
-    write   = true
-    delete  = true
-    list    = true
-    add     = true
-    create  = true
-    update  = true
-    process = true
-    tag     = true
-    filter  = true
-  }
-}
+#   permissions {
+#     read    = true
+#     write   = true
+#     delete  = true
+#     list    = true
+#     add     = true
+#     create  = true
+#     update  = true
+#     process = true
+#     tag     = true
+#     filter  = true
+#   }
+# }
 
 resource "azurerm_storage_container" "ct" {
   name                 = "terraform-state"
   storage_account_name = azurerm_storage_account.sa.name
+  container_access_type = "private"
 }
 
 ## GitHub secrets
