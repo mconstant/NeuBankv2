@@ -9,6 +9,18 @@ digraph G {
     "module.app_stack.azurerm_windows_web_app.backend" [label="azurerm_windows_web_app.backend"];
     "module.app_stack.azurerm_windows_web_app.frontend" [label="azurerm_windows_web_app.frontend"];
   }
+  subgraph "cluster_module.db" {
+    label = "module.db"
+    fontname = "sans-serif"
+    "module.db.azurerm_mssql_managed_instance.db" [label="azurerm_mssql_managed_instance.db"];
+    "module.db.azurerm_network_security_group.db" [label="azurerm_network_security_group.db"];
+    "module.db.azurerm_route_table.db" [label="azurerm_route_table.db"];
+    "module.db.azurerm_subnet.db" [label="azurerm_subnet.db"];
+    "module.db.azurerm_subnet_network_security_group_association.db" [label="azurerm_subnet_network_security_group_association.db"];
+    "module.db.azurerm_subnet_route_table_association.db" [label="azurerm_subnet_route_table_association.db"];
+    "module.db.random_password.password" [label="random_password.password"];
+    "module.db.random_pet.db" [label="random_pet.db"];
+  }
   subgraph "cluster_module.network.module.vnet" {
     label = "module.network.module.vnet"
     fontname = "sans-serif"
@@ -17,5 +29,17 @@ digraph G {
   "module.app_stack.azurerm_service_plan.this" -> "azurerm_resource_group.this";
   "module.app_stack.azurerm_windows_web_app.backend" -> "module.app_stack.azurerm_service_plan.this";
   "module.app_stack.azurerm_windows_web_app.frontend" -> "module.app_stack.azurerm_service_plan.this";
+  "module.db.azurerm_mssql_managed_instance.db" -> "module.db.azurerm_subnet_route_table_association.db";
+  "module.db.azurerm_mssql_managed_instance.db" -> "module.db.random_password.password";
+  "module.db.azurerm_network_security_group.db" -> "azurerm_resource_group.this";
+  "module.db.azurerm_network_security_group.db" -> "module.db.random_pet.db";
+  "module.db.azurerm_route_table.db" -> "azurerm_resource_group.this";
+  "module.db.azurerm_route_table.db" -> "module.db.random_pet.db";
+  "module.db.azurerm_subnet.db" -> "module.db.random_pet.db";
+  "module.db.azurerm_subnet.db" -> "module.network.module.vnet.azurerm_virtual_network.this";
+  "module.db.azurerm_subnet_network_security_group_association.db" -> "module.db.azurerm_network_security_group.db";
+  "module.db.azurerm_subnet_network_security_group_association.db" -> "module.db.azurerm_subnet.db";
+  "module.db.azurerm_subnet_route_table_association.db" -> "module.db.azurerm_route_table.db";
+  "module.db.azurerm_subnet_route_table_association.db" -> "module.db.azurerm_subnet_network_security_group_association.db";
   "module.network.module.vnet.azurerm_virtual_network.this" -> "azurerm_resource_group.this";
 }
