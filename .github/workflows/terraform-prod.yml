@@ -162,6 +162,7 @@ jobs:
     - uses: asannou/tfmermaid-action@v1
       with:
         file: README.md
+        working-directory: ./terraform
 
     - name: Add Arch Diagrams to Branch and README.md
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
