@@ -4,7 +4,9 @@
 
 `overview.png` is an overview arch diagram of this project as described in the original instructions.
 
-`{env}_infrastructure.png` is the currently deployed infrastructure in any one environment.
+If a deployment is succesful and deployed the pipeline will run `terraform graph` and then convert the .dot to a png and make something like `{env}_infrastructure.png`, to show what is currently deployed in an environment.
+
+`dev_infrastructure_kept.png` ~~is~~ will be an example of that.
 
 ## ./bootstrap
 
