@@ -165,6 +165,7 @@ jobs:
       with:
         file: ${{ github.workspace }}/README.md
         working-directory: .
+        label: prod
         exclude: var,output
 
     - name: Add Arch Diagrams to Branch and README.md

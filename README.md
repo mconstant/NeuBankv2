@@ -1,5 +1,5 @@
 ```mermaid
-%%tfmermaid
+%%tfmermaid:prod
 %%{init:{"theme":"default","themeVariables":{"lineColor":"#6f7682","textColor":"#6f7682"}}}%%
 flowchart LR
 classDef r fill:#5c4ee5,stroke:#444,color:#fff
