@@ -2,6 +2,10 @@ digraph G {
   rankdir = "RL";
   node [shape = rect, fontname = "sans-serif"];
   "azurerm_resource_group.this" [label="azurerm_resource_group.this"];
-  "azurerm_virtual_network.this" [label="azurerm_virtual_network.this"];
-  "azurerm_virtual_network.this" -> "azurerm_resource_group.this";
+  subgraph "cluster_module.network.module.vnet" {
+    label = "module.network.module.vnet"
+    fontname = "sans-serif"
+    "module.network.module.vnet.azurerm_virtual_network.this" [label="azurerm_virtual_network.this"];
+  }
+  "module.network.module.vnet.azurerm_virtual_network.this" -> "azurerm_resource_group.this";
 }
