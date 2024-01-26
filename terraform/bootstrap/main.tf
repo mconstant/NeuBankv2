@@ -101,7 +101,6 @@ resource "github_actions_secret" "actions_secret" {
     ARM_CLIENT_SECRET   = azuread_service_principal_password.gh_actions.value
     ARM_SUBSCRIPTION_ID = data.azurerm_subscription.current.subscription_id
     ARM_TENANT_ID       = data.azuread_client_config.current.tenant_id
-    # ARM_SAS_TOKEN       = data.azurerm_storage_account_sas.sas.sas
   }
 
   repository      = var.github_repository
