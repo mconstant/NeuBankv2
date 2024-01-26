@@ -24,6 +24,16 @@ module "app_stack" {
   rg_name = azurerm_resource_group.this[0].name
 }
 
+module "db" {
+  count  = var.enable ? 1 : 0
+  source = "./modules/db"
+
+  company   = var.company
+  region    = var.region
+  rg_name   = azurerm_resource_group.this[0].name
+  vnet_name = module.network[0].vnet_name
+}
+
 module "common" {
   source = "./modules/common"
 }
