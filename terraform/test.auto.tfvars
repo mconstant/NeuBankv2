@@ -1,1 +1,1 @@
-region = eastus
+region = "eastus"
