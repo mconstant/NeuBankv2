@@ -1,0 +1,185 @@
+name: 'Terraform Test'
+
+on:
+  push:
+     branches:
+       - test
+  pull_request:
+     branches:
+       - test
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+env:
+ WORKSPACE: test
+ ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+ ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+ ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+ ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+ RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+ STORAGE_ACCOUNT: ${{ secrets.STORAGE_ACCOUNT }}
+ CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+ ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+
+#Special permissions required for OIDC authentication
+permissions:
+    id-token: write
+    contents: read
+    pull-requests: write
+
+jobs:
+ terraform:
+    name: 'Terraform'
+    permissions: write-all
+    runs-on: ubuntu-latest
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    # Set the working directory to test for the config files
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+
+    # Install the preferred version of Terraform CLI 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3.0.0
+      with:
+        terraform_version: 1.7.1
+        terraform_wrapper: false
+    
+    - name: Setup Graphviz
+      uses: ts-graphviz/setup-graphviz@v1.2.0
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform First Init
+      id: init
+      run: terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ env.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ env.RESOURCE_GROUP }}" 
+
+    - name: Switch Workspace
+      id: workspace
+      run: terraform workspace select ${{ env.WORKSPACE }}
+
+    - name: Terraform ReInit
+      id: reinit
+      run: terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ env.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ env.RESOURCE_GROUP }}" 
+
+    - name: Terraform Format
+      id: fmt
+      if: github.ref != 'refs/heads/test'
+      run: terraform fmt -check -recursive
+      
+    # Run a terraform validate for push and PR on non-test branch
+    # Run even if formatting fails
+    - name: Terraform Validate
+      id: validate
+      if: github.ref != 'refs/heads/test' && (success() || failure())
+      run: terraform validate
+
+    # Run a terraform plan for pull requests only
+    - name: Terraform Plan
+      id: plan
+      if: github.event.pull_request.base.ref == 'test' && github.event_name == 'pull_request'
+      shell: bash
+      run: |
+        echo 'plan<<EOF' >> $GITHUB_OUTPUT
+        terraform plan -no-color -out=tfplan >> $GITHUB_OUTPUT
+        echo 'EOF' >> $GITHUB_OUTPUT
+
+    # Run Checkov against configuration
+    - name: Checkov
+      if: github.event_name == 'pull_request'
+      id: checkov
+      continue-on-error: true
+      uses: bridgecrewio/checkov-action@master
+      with:
+        quiet: true
+        framework: terraform
+        container_user: 1000
+        output_format: github_failed_only
+        soft_fail: false
+        skip_path: ./bootstrap
+        skip_check: CKV_AZURE_88,CKV_AZURE_71,CKV_AZURE_16,CKV_AZURE_80,CKV_AZURE_63,CKV_AZURE_18,CKV_AZURE_65,CKV_AZURE_17,CKV_AZURE_13,CKV_AZURE_78,CKV_AZURE_66,CKV_AZURE_44,CKV_AZURE_35,CKV_AZURE_43,CKV_AZURE_33,CKV_AZURE_3,CKV2_AZURE_1,CKV2_AZURE_18,CKV2_AZURE_8,CKV2_AZURE_21,CKV_GIT_4,CKV_AZURE_206,CKV_AZURE_225,CKV_AZURE_212,CKV_AZURE_213
+
+    # Add a comment to pull requests with plan results
+    - name: add-plan-comment
+      id: comment
+      uses: actions/github-script@v3
+      if: github.event_name == 'pull_request' && (success() || failure())
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.plan }}"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
+          #### Checkov 🧪\`${{ steps.checkov.outcome }}\`
+      
+          <details><summary>Show Plan</summary>
+          
+          ${{steps.plan.outputs.plan}}
+          
+          </details>
+
+          <details><summary>Show Checkov Results</summary>
+
+          ${process.env.CHECKOV_RESULTS}
+
+          </details>
+          
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/test' && github.event_name == 'push'
+      run: terraform apply -auto-approve
+
+    - name: Generate Arch Diagram .dot
+      if: github.ref == 'refs/heads/test' && github.event_name == 'push'
+      run: terraform graph > test_infrastructure.dot
+
+    - name: Generate Arch Diagram .png
+      if: github.ref == 'refs/heads/test' && github.event_name == 'push'
+      run: terraform graph | dot -Tpng > test_infrastructure.png
+
+    - name: Upload Artifact
+      if: github.ref == 'refs/heads/test' && github.event_name == 'push'
+      uses: actions/upload-artifact@v4.2.0
+      with:
+        name: test-infrastructure
+        path: test_infrastructure.png
+
+    # - name: gen diagram in readme
+    #   uses: asannou/tfmermaid-action@v1.1.0
+    #   if: github.ref == 'refs/heads/test' && github.event_name == 'push'
+    #   with:
+    #     file: ${{ github.workspace }}/README.md
+    #     working-directory: .
+    #     label: test
+    #     exclude: var,output
+
+    - name: Add Arch Diagrams to Branch and README.md
+      if: github.ref == 'refs/heads/test' && github.event_name == 'push'
+      run: |
+        git add README.md
+        git add test_infrastructure.png
+        git add test_infrastructure.dot
+        if ! git diff --cached --quiet --exit-code
+        then
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Update test_infrastructure.png and test_infrastructure.dot"
+          git push
+        fi  
