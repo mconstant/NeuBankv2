@@ -40,6 +40,8 @@ this repo's settings need the secrets populated with the values it needs to auth
 
 This project makes use of auto tfvars and workspaces to handle the environments. The pipelines are set accordingly to handle the environments.
 
+Environments can be enabled (set to deploy) or disabled (will destroy if was deployed before) in the `prod.auto.tfvars`, `dev.auto.tfvars`, and `test.auto.tfvars` files with `enable = true`. It defaults to `false`.
+
 ## Pipelines
 
 This project uses github actions. The pipeline for every environment branch does the following.
