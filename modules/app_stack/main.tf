@@ -16,7 +16,9 @@ resource "azurerm_windows_web_app" "frontend" {
   https_only                    = true
   public_network_access_enabled = false
 
-  site_config {}
+  site_config {
+    vnet_route_all_enabled = true
+  }
 
   app_settings = {}
 
@@ -31,7 +33,9 @@ resource "azurerm_windows_web_app" "backend" {
   https_only                    = true
   public_network_access_enabled = false
 
-  site_config {}
+  site_config {
+    vnet_route_all_enabled = true
+  }
 
   app_settings = {}
 
