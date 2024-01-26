@@ -1,17 +1,18 @@
 resource "azurerm_resource_group" "this" {
+  count    = var.enable ? 1 : 0
   name     = "${var.company}-${terraform.workspace}-rg-${var.region}"
   location = var.region
 
   tags = lookup(module.common.tags, terraform.workspace, null)
 }
 
-resource "azurerm_virtual_network" "this" {
-  name                = "${var.company}-${terraform.workspace}-vnet-${var.region}"
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
-  address_space       = ["10.0.0.0/16"]
+module "network" {
+  count  = var.enable ? 1 : 0
+  source = "./modules/network"
 
-  tags = lookup(module.common.tags, terraform.workspace, null)
+  company = var.company
+  region  = var.region
+  rg_name = azurerm_resource_group.this[0].name
 }
 
 module "common" {
