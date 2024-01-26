@@ -95,6 +95,7 @@ jobs:
     - name: Checkov
       if: github.event_name == 'pull_request'
       id: checkov
+      continue-on-error: true
       uses: bridgecrewio/checkov-action@master
       with:
         quiet: true

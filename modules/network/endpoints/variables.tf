@@ -10,10 +10,14 @@ variable "rg_name" {
   type = string
 }
 
-variable "app_insights_instrumentation_key" {
+variable "endpoint_subnet_id" {
   type = string
 }
 
-variable "app_insights_connection_string" {
+variable "private_dns_zone_id" {
+  type = string
+}
+
+variable "backend_id" {
   type = string
 }

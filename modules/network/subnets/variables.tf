@@ -10,10 +10,6 @@ variable "rg_name" {
   type = string
 }
 
-variable "app_insights_instrumentation_key" {
-  type = string
-}
-
-variable "app_insights_connection_string" {
+variable "virtual_network_name" {
   type = string
 }
