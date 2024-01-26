@@ -2,10 +2,20 @@ digraph G {
   rankdir = "RL";
   node [shape = rect, fontname = "sans-serif"];
   "azurerm_resource_group.this" [label="azurerm_resource_group.this"];
+  subgraph "cluster_module.app_stack" {
+    label = "module.app_stack"
+    fontname = "sans-serif"
+    "module.app_stack.azurerm_service_plan.this" [label="azurerm_service_plan.this"];
+    "module.app_stack.azurerm_windows_web_app.backend" [label="azurerm_windows_web_app.backend"];
+    "module.app_stack.azurerm_windows_web_app.frontend" [label="azurerm_windows_web_app.frontend"];
+  }
   subgraph "cluster_module.network.module.vnet" {
     label = "module.network.module.vnet"
     fontname = "sans-serif"
     "module.network.module.vnet.azurerm_virtual_network.this" [label="azurerm_virtual_network.this"];
   }
+  "module.app_stack.azurerm_service_plan.this" -> "azurerm_resource_group.this";
+  "module.app_stack.azurerm_windows_web_app.backend" -> "module.app_stack.azurerm_service_plan.this";
+  "module.app_stack.azurerm_windows_web_app.frontend" -> "module.app_stack.azurerm_service_plan.this";
   "module.network.module.vnet.azurerm_virtual_network.this" -> "azurerm_resource_group.this";
 }
