@@ -160,7 +160,7 @@ jobs:
         name: prod-infrastructure
         path: prod_infrastructure.png
 
-    - uses: asannou/tfmermaid-action@v1
+    - uses: asannou/tfmermaid-action@v1.1.0
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       with:
         file: README.md
