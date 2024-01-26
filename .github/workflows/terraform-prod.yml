@@ -176,24 +176,3 @@ jobs:
         git add prod_infrastructure.dot
         git commit -m "Update prod_infrastructure.png and prod_infrastructure.dot and rover_prod.svg"
         git push
-
-    
-    - name: Generate Overview Diagram
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: dot overview.dot -Tpng > overview.png
-
-    - name: Upload Artifact
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      uses: actions/upload-artifact@v4.2.0
-      with:
-        name: overview
-        path: overview.png
-    
-    - name: Add Overview Diagram to Branch
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add overview.png
-        git commit -m "Update overview.png"
-        git push
