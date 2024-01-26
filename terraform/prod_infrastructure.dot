@@ -1,0 +1,5 @@
+digraph G {
+  rankdir = "RL";
+  node [shape = rect, fontname = "sans-serif"];
+  "azurerm_resource_group.this" [label="azurerm_resource_group.this"];
+}
