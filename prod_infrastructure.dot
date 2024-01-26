@@ -2,4 +2,6 @@ digraph G {
   rankdir = "RL";
   node [shape = rect, fontname = "sans-serif"];
   "azurerm_resource_group.this" [label="azurerm_resource_group.this"];
+  "azurerm_virtual_network.this" [label="azurerm_virtual_network.this"];
+  "azurerm_virtual_network.this" -> "azurerm_resource_group.this";
 }
