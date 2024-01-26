@@ -8,7 +8,7 @@ variable "azure_location" {
 }
 
 variable "github_user_name" {
-  type    = string
+  type = string
 }
 
 variable "github_repository" {
@@ -17,6 +17,6 @@ variable "github_repository" {
 }
 
 variable "token" {
-  type    = string
+  type      = string
   sensitive = true
 }

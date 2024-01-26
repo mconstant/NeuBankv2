@@ -3,6 +3,6 @@ variable "region" {
 }
 
 variable "company" {
-  type = string
+  type    = string
   default = "neubank"
 }

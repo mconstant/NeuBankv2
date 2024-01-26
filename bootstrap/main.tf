@@ -41,17 +41,17 @@ resource "azurerm_resource_group" "setup" {
 }
 
 resource "azurerm_storage_account" "sa" {
-  name                          = local.storage_account_name
-  resource_group_name           = azurerm_resource_group.setup.name
-  location                      = var.azure_location
-  account_tier                  = "Standard"
-  account_replication_type      = "LRS"
+  name                            = local.storage_account_name
+  resource_group_name             = azurerm_resource_group.setup.name
+  location                        = var.azure_location
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
   allow_nested_items_to_be_public = false
 }
 
 resource "azurerm_storage_container" "ct" {
-  name                 = "terraform-state"
-  storage_account_name = azurerm_storage_account.sa.name
+  name                  = "terraform-state"
+  storage_account_name  = azurerm_storage_account.sa.name
   container_access_type = "private"
 }
 
