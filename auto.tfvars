@@ -1,0 +1,2 @@
+region = "eastus"
+enable = true
