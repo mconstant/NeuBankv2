@@ -39,7 +39,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform
+        working-directory: ./
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -163,8 +163,8 @@ jobs:
     - uses: asannou/tfmermaid-action@v1
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       with:
-        file: ../README.md
-        working-directory: ./terraform
+        file: README.md
+        working-directory: ./
 
     - name: Add Arch Diagrams to Branch and README.md
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -176,7 +176,6 @@ jobs:
         git add prod_infrastructure.dot
         git commit -m "Update prod_infrastructure.png and prod_infrastructure.dot and rover_prod.svg"
         git push
-
 
     
     - name: Generate Overview Diagram
