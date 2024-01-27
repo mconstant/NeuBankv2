@@ -1,2 +1,0 @@
-region = "eastus"
-enable = false
