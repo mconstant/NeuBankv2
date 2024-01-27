@@ -1,0 +1,93 @@
+digraph G {
+  rankdir = "RL";
+  node [shape = rect, fontname = "sans-serif"];
+  "azurerm_resource_group.this" [label="azurerm_resource_group.this"];
+  subgraph "cluster_module.app_insights" {
+    label = "module.app_insights"
+    fontname = "sans-serif"
+    "module.app_insights.azurerm_application_insights.this" [label="azurerm_application_insights.this"];
+    "module.app_insights.azurerm_log_analytics_workspace.this" [label="azurerm_log_analytics_workspace.this"];
+  }
+  subgraph "cluster_module.app_stack" {
+    label = "module.app_stack"
+    fontname = "sans-serif"
+    "module.app_stack.azurerm_service_plan.this" [label="azurerm_service_plan.this"];
+    "module.app_stack.azurerm_windows_web_app.backend" [label="azurerm_windows_web_app.backend"];
+    "module.app_stack.azurerm_windows_web_app.frontend" [label="azurerm_windows_web_app.frontend"];
+  }
+  subgraph "cluster_module.db" {
+    label = "module.db"
+    fontname = "sans-serif"
+    "module.db.azurerm_mssql_managed_instance.db" [label="azurerm_mssql_managed_instance.db"];
+    "module.db.azurerm_network_security_group.db" [label="azurerm_network_security_group.db"];
+    "module.db.azurerm_route_table.db" [label="azurerm_route_table.db"];
+    "module.db.azurerm_subnet.db" [label="azurerm_subnet.db"];
+    "module.db.azurerm_subnet_network_security_group_association.db" [label="azurerm_subnet_network_security_group_association.db"];
+    "module.db.azurerm_subnet_route_table_association.db" [label="azurerm_subnet_route_table_association.db"];
+    "module.db.random_password.password" [label="random_password.password"];
+    "module.db.random_pet.db" [label="random_pet.db"];
+  }
+  subgraph "cluster_module.network" {
+    label = "module.network"
+    fontname = "sans-serif"
+    "module.network.azurerm_app_service_virtual_network_swift_connection.frontend" [label="azurerm_app_service_virtual_network_swift_connection.frontend"];
+    "module.network.azurerm_network_security_group.vnet" [label="azurerm_network_security_group.vnet"];
+    "module.network.azurerm_private_dns_zone.this" [label="azurerm_private_dns_zone.this"];
+    "module.network.azurerm_virtual_network.this" [label="azurerm_virtual_network.this"];
+  }
+  subgraph "cluster_module.network.module.endpoints" {
+    label = "module.network.module.endpoints"
+    fontname = "sans-serif"
+    "module.network.module.endpoints.azurerm_private_endpoint.backend" [label="azurerm_private_endpoint.backend"];
+  }
+  subgraph "cluster_module.network.module.subnets" {
+    label = "module.network.module.subnets"
+    fontname = "sans-serif"
+    "module.network.module.subnets.azurerm_subnet.endpoint" [label="azurerm_subnet.endpoint"];
+    "module.network.module.subnets.azurerm_subnet.integration" [label="azurerm_subnet.integration"];
+  }
+  subgraph "cluster_module.storage" {
+    label = "module.storage"
+    fontname = "sans-serif"
+    "module.storage.azurerm_private_endpoint.blob" [label="azurerm_private_endpoint.blob"];
+    "module.storage.azurerm_storage_account.blob" [label="azurerm_storage_account.blob"];
+    "module.storage.azurerm_storage_blob.blob" [label="azurerm_storage_blob.blob"];
+    "module.storage.azurerm_storage_container.blob" [label="azurerm_storage_container.blob"];
+    "module.storage.random_string.sac" [label="random_string.sac"];
+  }
+  "module.app_insights.azurerm_application_insights.this" -> "module.app_insights.azurerm_log_analytics_workspace.this";
+  "module.app_insights.azurerm_log_analytics_workspace.this" -> "azurerm_resource_group.this";
+  "module.app_stack.azurerm_service_plan.this" -> "azurerm_resource_group.this";
+  "module.app_stack.azurerm_windows_web_app.backend" -> "module.app_insights.azurerm_application_insights.this";
+  "module.app_stack.azurerm_windows_web_app.backend" -> "module.app_stack.azurerm_service_plan.this";
+  "module.app_stack.azurerm_windows_web_app.frontend" -> "module.app_insights.azurerm_application_insights.this";
+  "module.app_stack.azurerm_windows_web_app.frontend" -> "module.app_stack.azurerm_service_plan.this";
+  "module.db.azurerm_mssql_managed_instance.db" -> "module.db.azurerm_subnet_route_table_association.db";
+  "module.db.azurerm_mssql_managed_instance.db" -> "module.db.random_password.password";
+  "module.db.azurerm_network_security_group.db" -> "azurerm_resource_group.this";
+  "module.db.azurerm_network_security_group.db" -> "module.db.random_pet.db";
+  "module.db.azurerm_route_table.db" -> "azurerm_resource_group.this";
+  "module.db.azurerm_route_table.db" -> "module.db.random_pet.db";
+  "module.db.azurerm_subnet.db" -> "module.db.random_pet.db";
+  "module.db.azurerm_subnet.db" -> "module.network.azurerm_virtual_network.this";
+  "module.db.azurerm_subnet_network_security_group_association.db" -> "module.db.azurerm_network_security_group.db";
+  "module.db.azurerm_subnet_network_security_group_association.db" -> "module.db.azurerm_subnet.db";
+  "module.db.azurerm_subnet_route_table_association.db" -> "module.db.azurerm_route_table.db";
+  "module.db.azurerm_subnet_route_table_association.db" -> "module.db.azurerm_subnet_network_security_group_association.db";
+  "module.network.azurerm_app_service_virtual_network_swift_connection.frontend" -> "module.app_stack.azurerm_windows_web_app.frontend";
+  "module.network.azurerm_app_service_virtual_network_swift_connection.frontend" -> "module.network.module.subnets.azurerm_subnet.integration";
+  "module.network.azurerm_network_security_group.vnet" -> "azurerm_resource_group.this";
+  "module.network.azurerm_private_dns_zone.this" -> "azurerm_resource_group.this";
+  "module.network.azurerm_virtual_network.this" -> "azurerm_resource_group.this";
+  "module.network.module.endpoints.azurerm_private_endpoint.backend" -> "module.app_stack.azurerm_windows_web_app.backend";
+  "module.network.module.endpoints.azurerm_private_endpoint.backend" -> "module.network.azurerm_private_dns_zone.this";
+  "module.network.module.endpoints.azurerm_private_endpoint.backend" -> "module.network.module.subnets.azurerm_subnet.endpoint";
+  "module.network.module.subnets.azurerm_subnet.endpoint" -> "module.network.azurerm_virtual_network.this";
+  "module.network.module.subnets.azurerm_subnet.integration" -> "module.network.azurerm_virtual_network.this";
+  "module.storage.azurerm_private_endpoint.blob" -> "module.network.module.subnets.azurerm_subnet.endpoint";
+  "module.storage.azurerm_private_endpoint.blob" -> "module.storage.azurerm_storage_account.blob";
+  "module.storage.azurerm_storage_account.blob" -> "azurerm_resource_group.this";
+  "module.storage.azurerm_storage_account.blob" -> "module.storage.random_string.sac";
+  "module.storage.azurerm_storage_blob.blob" -> "module.storage.azurerm_storage_container.blob";
+  "module.storage.azurerm_storage_container.blob" -> "module.storage.azurerm_storage_account.blob";
+}

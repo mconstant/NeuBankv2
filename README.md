@@ -1,26 +1,24 @@
-```mermaid
-%%tfmermaid:prod
-%%{init:{"theme":"default","themeVariables":{"lineColor":"#6f7682","textColor":"#6f7682"}}}%%
-flowchart LR
-classDef r fill:#5c4ee5,stroke:#444,color:#fff
-classDef v fill:#eeedfc,stroke:#eeedfc,color:#5c4ee5
-classDef ms fill:none,stroke:#dce0e6,stroke-width:2px
-classDef vs fill:none,stroke:#dce0e6,stroke-width:4px,stroke-dasharray:10
-classDef ps fill:none,stroke:none
-classDef cs fill:#f7f8fa,stroke:#dce0e6,stroke-width:2px
-```
-
 # Notes
 
 ## Arch Diagrams
 
 `overview.png` is an overview arch diagram of this project as described in the original instructions.
 
-`{env}_infrastructure.png` is the currently deployed infrastructure in any one environment.
+`overview.png`
+![Overview Diagram](https://github.com/dbwest/NeuBankv2/blob/main/overview.png?raw=true)
 
-## ./bootstrap
+This project generates architecture diagrams during deployment (so far just by yeeting the .dot file from Terraform to graphviz and an image utility but other options like [Rover](https://github.com/im2nguyen/rover) and [Mermaid](https://github.com/asannou/tfmermaid-action) exist.)
 
-`make bootstrap` does a few things
+If a deployment is succesful and deployed the pipeline will run `terraform graph` and then convert the `.dot` to a `.png` and make something like `{env}_infrastructure.png`, to show what is currently deployed in an environment.
+
+`dev_infrastructure_kept.png` is an example of that.
+
+`dev_infrastructure_kept.png`
+![Dev Infra Diagram](https://github.com/dbwest/NeuBankv2/blob/main/dev_infrastructure_kept.png?raw=true)
+
+## `./bootstrap`
+
+Anyone that forks this repo needs to `az login`. After that `make bootstrap` does a few things that mostly set everything up, provided a user has `PAT_TOKEN_VALUE` as an exported env var set to a Github Personal Access token that has access to read and write secrets in their repo.
 
 ### tfstate setup
 
@@ -28,7 +26,11 @@ tfstate is stored in Azure. The bootstrap directory and the `make bootstrap` com
 
 ### github secrets
 
-this repo's settings need the secrets populated with the values it needs to auth into azure. `make bootstrap` also handles that. It depends on the user setting `PAT_AUTHORIZATION_TOKEN` in a local `.env` file. That token should be authorized to update secrets in the repo.
+this repo's settings need the secrets populated with the values it needs to auth into azure. `make bootstrap` also handles that. It depends on the user setting `PAT_AUTHORIZATION_TOKEN` in a local `.env` file that is sourced or just as an env var set and exported in their shell. As mentioned earlier, that token should be authorized to update secrets in the repo. The `make bootstrap` process also asks for a github username, provided a user has forked this and wants to get it working for them.
+
+### other bootstrap considerations
+
+to get going anyone that forks this repo also needs to run the `Add Terraform Workspaces` Github action after the previous bootstrap setup is done.  Terraform Cloud is a nice alternative to this that involves less of this bootstrapping and has many upsides, but it also has some downsides. This implementation does not use it.
 
 ## Env Branches
 
