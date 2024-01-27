@@ -8,7 +8,10 @@ This project generates architecture diagrams during deployment (so far just by y
 
 If a deployment is succesful and deployed the pipeline will run `terraform graph` and then convert the `.dot` to a `.png` and make something like `{env}_infrastructure.png`, to show what is currently deployed in an environment.
 
-`dev_infrastructure_kept.png` ~~is~~ will be an example of that.
+`dev_infrastructure_kept.png` is an example of that.
+
+`dev_infrastructure_kept.png`
+![Dev Infra Diagram](https://github.com/dbwest/NeuBankv2/blob/main/dev_infrastructure_kept.png?raw=true)
 
 ## `./bootstrap`
 
