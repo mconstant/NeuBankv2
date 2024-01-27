@@ -39,6 +39,8 @@ resource "azurerm_private_endpoint" "blob" {
     private_connection_resource_id = azurerm_storage_account.blob.id
     subresource_names              = ["blob"]
   }
+
+  tags = lookup(module.common.tags, terraform.workspace, null)
 }
 
 resource "azurerm_storage_container" "blob" {
