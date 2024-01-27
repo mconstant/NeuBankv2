@@ -1,3 +1,8 @@
+resource "azurerm_app_service_virtual_network_swift_connection" "frontend" {
+  app_service_id = var.frontend_id
+  subnet_id      = var.integration_subnet_id
+}
+
 resource "azurerm_private_endpoint" "backend" {
   name                = "backwebappprivateendpoint"
   location            = var.region

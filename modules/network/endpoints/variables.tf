@@ -14,10 +14,18 @@ variable "endpoint_subnet_id" {
   type = string
 }
 
+variable "integration_subnet_id" {
+  type = string
+}
+
 variable "private_dns_zone_id" {
   type = string
 }
 
 variable "backend_id" {
+  type = string
+}
+
+variable "frontend_id" {
   type = string
 }

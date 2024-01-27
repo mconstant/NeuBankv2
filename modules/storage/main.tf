@@ -5,11 +5,11 @@ resource "random_string" "sac" {
 }
 
 resource "azurerm_storage_account" "blob" {
-  name                            = "${random_string.sac.result}${terraform.workspace}storacc${var.region}"
-  resource_group_name             = var.rg_name
-  location                        = var.region
-  account_tier                    = "Standard"
-  account_replication_type        = "LRS"
+  name                     = "${random_string.sac.result}${terraform.workspace}storacc${var.region}"
+  resource_group_name      = var.rg_name
+  location                 = var.region
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
   # public_network_access_enabled   = false
   allow_nested_items_to_be_public = false
 
