@@ -5,7 +5,7 @@ resource "random_string" "sac" {
 }
 
 resource "azurerm_storage_account" "blob" {
-  name                            = "${random_string.sac.result}${var.company}${terraform.workspace}storacc${var.region}"
+  name                            = "${random_string.sac.result}${terraform.workspace}storacc${var.region}"
   resource_group_name             = var.rg_name
   location                        = var.region
   account_tier                    = "Standard"
