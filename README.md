@@ -54,8 +54,9 @@ This project uses github actions. The pipeline for every environment branch does
 
 ## Subnets
 This uses a vnet and subnets. The subnets are:
-- Integration
-- Endpoint
+- Integration (CIDR "10.0.1.0/24")
+- Endpoint (CIDR "10.0.2.0/24")
+- Database (CIDR "10.0.3.0/28" included in the db module)
 
 ## DB
 This uses a managed mssql db on Azure. It can take 30 minutes or more to bring that resource up.
