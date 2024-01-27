@@ -30,7 +30,6 @@ digraph G {
   subgraph "cluster_module.network" {
     label = "module.network"
     fontname = "sans-serif"
-    "module.network.azurerm_app_service_virtual_network_swift_connection.frontend" [label="azurerm_app_service_virtual_network_swift_connection.frontend"];
     "module.network.azurerm_network_security_group.vnet" [label="azurerm_network_security_group.vnet"];
     "module.network.azurerm_private_dns_zone.this" [label="azurerm_private_dns_zone.this"];
     "module.network.azurerm_virtual_network.this" [label="azurerm_virtual_network.this"];
@@ -38,6 +37,7 @@ digraph G {
   subgraph "cluster_module.network.module.endpoints" {
     label = "module.network.module.endpoints"
     fontname = "sans-serif"
+    "module.network.module.endpoints.azurerm_app_service_virtual_network_swift_connection.frontend" [label="azurerm_app_service_virtual_network_swift_connection.frontend"];
     "module.network.module.endpoints.azurerm_private_endpoint.backend" [label="azurerm_private_endpoint.backend"];
   }
   subgraph "cluster_module.network.module.subnets" {
@@ -74,11 +74,11 @@ digraph G {
   "module.db.azurerm_subnet_network_security_group_association.db" -> "module.db.azurerm_subnet.db";
   "module.db.azurerm_subnet_route_table_association.db" -> "module.db.azurerm_route_table.db";
   "module.db.azurerm_subnet_route_table_association.db" -> "module.db.azurerm_subnet_network_security_group_association.db";
-  "module.network.azurerm_app_service_virtual_network_swift_connection.frontend" -> "module.app_stack.azurerm_windows_web_app.frontend";
-  "module.network.azurerm_app_service_virtual_network_swift_connection.frontend" -> "module.network.module.subnets.azurerm_subnet.integration";
   "module.network.azurerm_network_security_group.vnet" -> "azurerm_resource_group.this";
   "module.network.azurerm_private_dns_zone.this" -> "azurerm_resource_group.this";
   "module.network.azurerm_virtual_network.this" -> "azurerm_resource_group.this";
+  "module.network.module.endpoints.azurerm_app_service_virtual_network_swift_connection.frontend" -> "module.app_stack.azurerm_windows_web_app.frontend";
+  "module.network.module.endpoints.azurerm_app_service_virtual_network_swift_connection.frontend" -> "module.network.module.subnets.azurerm_subnet.integration";
   "module.network.module.endpoints.azurerm_private_endpoint.backend" -> "module.app_stack.azurerm_windows_web_app.backend";
   "module.network.module.endpoints.azurerm_private_endpoint.backend" -> "module.network.azurerm_private_dns_zone.this";
   "module.network.module.endpoints.azurerm_private_endpoint.backend" -> "module.network.module.subnets.azurerm_subnet.endpoint";
