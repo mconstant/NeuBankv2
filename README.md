@@ -41,7 +41,7 @@ to get going anyone that forks this repo also needs to run the `Add Terraform Wo
 
 This project makes use of auto tfvars and workspaces to handle the environments. The pipelines are set accordingly to handle the environments.
 
-Environments can be enabled (set to deploy) or disabled (will destroy if was deployed before) in the `prod.auto.tfvars`, `dev.auto.tfvars`, and `test.auto.tfvars` files with `enable = true`. It defaults to `false`.
+Environments can be enabled (set to deploy) or disabled (will destroy if was deployed before) in the `prod.tfvars`, `dev.tfvars`, and `test.tfvars` files with `enable = true`. It defaults to `false`.
 
 ## Pipelines
 
