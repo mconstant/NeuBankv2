@@ -4,11 +4,17 @@
 
 `overview.png` is an overview arch diagram of this project as described in the original instructions.
 
+`overview.png`
+![Overview Diagram](https://github.com/dbwest/NeuBankv2/blob/main/overview.png?raw=true)
+
 This project generates architecture diagrams during deployment (so far just by yeeting the .dot file from Terraform to graphviz and an image utility but other options like [Rover](https://github.com/im2nguyen/rover) and [Mermaid](https://github.com/asannou/tfmermaid-action) exist.)
 
 If a deployment is succesful and deployed the pipeline will run `terraform graph` and then convert the `.dot` to a `.png` and make something like `{env}_infrastructure.png`, to show what is currently deployed in an environment.
 
-`dev_infrastructure_kept.png` ~~is~~ will be an example of that.
+`dev_infrastructure_kept.png` is an example of that.
+
+`dev_infrastructure_kept.png`
+![Dev Infra Diagram](https://github.com/dbwest/NeuBankv2/blob/main/dev_infrastructure_kept.png?raw=true)
 
 ## `./bootstrap`
 
