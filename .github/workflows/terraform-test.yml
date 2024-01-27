@@ -79,7 +79,7 @@ jobs:
     - name: Terraform Validate
       id: validate
       if: github.ref != 'refs/heads/test' && (success() || failure())
-      run: terraform validate
+      run: terraform validate -var-file="${{ env.WORKSPACE }}.tfvars"
 
     # Run a terraform plan for pull requests only
     - name: Terraform Plan
@@ -88,7 +88,7 @@ jobs:
       shell: bash
       run: |
         echo 'plan<<EOF' >> $GITHUB_OUTPUT
-        terraform plan -no-color -out=tfplan >> $GITHUB_OUTPUT
+        terraform plan -var-file="${{ env.WORKSPACE }}.tfvars" -no-color -out=tfplan >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
 
     # Run Checkov against configuration
@@ -144,15 +144,15 @@ jobs:
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/test' && github.event_name == 'push'
-      run: terraform apply -auto-approve
+      run: terraform apply -var-file="${{ env.WORKSPACE }}.tfvars" -auto-approve
 
     - name: Generate Arch Diagram .dot
       if: github.ref == 'refs/heads/test' && github.event_name == 'push'
-      run: terraform graph > test_infrastructure.dot
+      run: terraform graph -var-file="${{ env.WORKSPACE }}.tfvars" > test_infrastructure.dot
 
     - name: Generate Arch Diagram .png
       if: github.ref == 'refs/heads/test' && github.event_name == 'push'
-      run: terraform graph | dot -Tpng > test_infrastructure.png
+      run: terraform graph -var-file="${{ env.WORKSPACE }}.tfvars" | dot -Tpng > test_infrastructure.png
 
     - name: Upload Artifact
       if: github.ref == 'refs/heads/test' && github.event_name == 'push'
