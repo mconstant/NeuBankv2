@@ -7,6 +7,8 @@ digraph G {
     fontname = "sans-serif"
     "module.app_insights.azurerm_application_insights.this" [label="azurerm_application_insights.this"];
     "module.app_insights.azurerm_log_analytics_workspace.this" [label="azurerm_log_analytics_workspace.this"];
+    "module.app_insights.azurerm_monitor_action_group.this" [label="azurerm_monitor_action_group.this"];
+    "module.app_insights.azurerm_monitor_smart_detector_alert_rule.this" [label="azurerm_monitor_smart_detector_alert_rule.this"];
   }
   subgraph "cluster_module.app_stack" {
     label = "module.app_stack"
@@ -57,6 +59,9 @@ digraph G {
   }
   "module.app_insights.azurerm_application_insights.this" -> "module.app_insights.azurerm_log_analytics_workspace.this";
   "module.app_insights.azurerm_log_analytics_workspace.this" -> "azurerm_resource_group.this";
+  "module.app_insights.azurerm_monitor_action_group.this" -> "azurerm_resource_group.this";
+  "module.app_insights.azurerm_monitor_smart_detector_alert_rule.this" -> "module.app_insights.azurerm_application_insights.this";
+  "module.app_insights.azurerm_monitor_smart_detector_alert_rule.this" -> "module.app_insights.azurerm_monitor_action_group.this";
   "module.app_stack.azurerm_service_plan.this" -> "azurerm_resource_group.this";
   "module.app_stack.azurerm_windows_web_app.backend" -> "module.app_insights.azurerm_application_insights.this";
   "module.app_stack.azurerm_windows_web_app.backend" -> "module.app_stack.azurerm_service_plan.this";
