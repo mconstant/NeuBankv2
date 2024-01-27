@@ -13,7 +13,7 @@ If a deployment is succesful and deployed the pipeline will run `terraform graph
 
 e.g.
 `prod_infrastructure.png`
-![Dev Infra Diagram](https://github.com/dbwest/NeuBankv2/blob/main/prod_infrastructure.png?raw=true)
+![Dev Infra Diagram](https://github.com/dbwest/NeuBankv2/blob/main/prod_infrastructure_kept.png?raw=true)
 
 ## `./bootstrap`
 
