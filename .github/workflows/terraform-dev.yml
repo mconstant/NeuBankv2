@@ -144,7 +144,7 @@ jobs:
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
-      run: terraform apply -auto-approve
+      run: terraform apply -var-file="${{ env.WORKSPACE }}.tfvars" -auto-approve
 
     - name: Generate Arch Diagram .dot
       if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
