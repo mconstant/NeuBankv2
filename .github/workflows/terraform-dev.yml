@@ -152,7 +152,7 @@ jobs:
 
     - name: Generate Arch Diagram .png
       if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
-      run: terraform graph -var-file="${{ env.WORKSPACE }}.tfvars" | dot -Tpng > dev_infrastructure.png
+      run: terraform graph | dot -Tpng > dev_infrastructure.png
 
     - name: Upload Artifact
       if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
