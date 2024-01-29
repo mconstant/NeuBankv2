@@ -7,14 +7,6 @@ resource "azurerm_virtual_network" "this" {
   tags = lookup(module.common.tags, terraform.workspace, null)
 }
 
-resource "azurerm_network_watcher" "this" {
-  name                = "${var.company}-${terraform.workspace}-nwwatcher-${var.region}"
-  location            = var.region
-  resource_group_name = var.rg_name
-
-  tags = lookup(module.common.tags, terraform.workspace, null)
-}
-
 resource "azurerm_network_security_group" "vnet" {
   name                = "${var.company}-${terraform.workspace}-vnetnsg-${var.region}"
   location            = var.region
