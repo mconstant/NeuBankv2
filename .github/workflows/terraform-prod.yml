@@ -79,7 +79,7 @@ jobs:
     - name: Terraform Validate
       id: validate
       if: github.ref != 'refs/heads/main' && (success() || failure())
-      run: terraform validate -var-file="${{ env.WORKSPACE }}.tfvars"
+      run: terraform validate
 
     # Run a terraform plan for pull requests only
     - name: Terraform Plan
