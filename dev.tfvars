@@ -1,3 +1,3 @@
 region = "eastus"
-enable = false
+enable = true
 
