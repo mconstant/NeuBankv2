@@ -7,6 +7,6 @@ jobs:
       - name: clean workflow runs
         uses: boredland/action-purge-workflow-runs@main
         with:
-          days-old: 1
+          days-old: 14
         env:
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_CLEANUP_PAT }}
