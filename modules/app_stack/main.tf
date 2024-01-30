@@ -1,15 +1,21 @@
+resource "random_string" "wapp" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
 resource "azurerm_service_plan" "this" {
   name                = "${var.company}-${terraform.workspace}-appserviceplan-${var.region}"
   location            = var.region
   resource_group_name = var.rg_name
-  os_type             = "Windows"
+  os_type             = "Linux"
   sku_name            = "P1v2"
 
   tags = lookup(module.common.tags, terraform.workspace, null)
 }
 
-resource "azurerm_windows_web_app" "frontend" {
-  name                          = "${var.company}-${terraform.workspace}-frontend-${var.region}"
+resource "azurerm_linux_web_app" "frontend" {
+  name                          = "${var.company}-${random_string.wapp.result}-${terraform.workspace}-frontend-${var.region}"
   location                      = var.region
   resource_group_name           = var.rg_name
   service_plan_id               = azurerm_service_plan.this.id
@@ -29,8 +35,8 @@ resource "azurerm_windows_web_app" "frontend" {
   tags = lookup(module.common.tags, terraform.workspace, null)
 }
 
-resource "azurerm_windows_web_app" "backend" {
-  name                          = "${var.company}-${terraform.workspace}-backend-${var.region}"
+resource "azurerm_linux_web_app" "backend" {
+  name                          = "${var.company}-${random_string.wapp.result}-${terraform.workspace}-backend-${var.region}"
   location                      = var.region
   resource_group_name           = var.rg_name
   service_plan_id               = azurerm_service_plan.this.id
