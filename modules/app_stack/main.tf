@@ -14,7 +14,7 @@ resource "azurerm_windows_web_app" "frontend" {
   resource_group_name           = var.rg_name
   service_plan_id               = azurerm_service_plan.this.id
   https_only                    = true
-  public_network_access_enabled = false
+  public_network_access_enabled = true
 
   site_config {
     vnet_route_all_enabled = true
